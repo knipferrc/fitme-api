@@ -1,0 +1,50 @@
+{
+  "name": "fitme-api",
+  "version": "0.0.3",
+  "description": "FitMeAPI - API For FitMe",
+  "author": "Tyler Knipfer <knipferrc@gmail.com>",
+  "license": "GPL-3.0",
+  "scripts": {
+    "dev": "nodemon server",
+    "start": "NODE_ENV=production node server",
+    "format": "prettier --write ./*.{js,json} ./**/*.{js,json}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knipferrc/fitme-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/knipferrc/fitme-api/issues"
+  },
+  "keywords": [
+    "fitness",
+    "graphql",
+    "fitme",
+    "api"
+  ],
+  "dependencies": {
+    "apollo-server-express": "^1.3.2",
+    "compression": "^1.7.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "graphql": "^0.12.3",
+    "graphql-subscriptions": "^0.5.6",
+    "graphql-tools": "^2.18.0",
+    "helmet": "^3.9.0",
+    "hpp": "^0.2.2",
+    "mongodb": "^3.0.1",
+    "subscriptions-transport-ws": "^0.9.5"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^6.0.0",
+    "nodemon": "^1.14.11",
+    "prettier": "^1.10.2"
+  },
+  "lint-staged": {
+    "*.{js,json}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
