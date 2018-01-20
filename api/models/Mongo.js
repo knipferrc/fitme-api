@@ -18,16 +18,24 @@ class Mongo {
     return this.collection.insertOne(fields)
   }
 
-  getById(id) {
-    return this.collection.findOne(ObjectId(id))
+  async getById(id) {
+    const doc = await this.collection.findOne(ObjectId(id))
+    return this._formatId(doc)
   }
 
   getCountByFilter(fields) {
     return this.collection.find(fields).count()
   }
 
-  getByFilter(fields) {
-    return this.collection.find(fields)
+  async getByFilter(fields) {
+    const doc = await this.collection.find(fields)
+    return this._formatId(doc)
+  }
+
+  _formatId(doc) {
+    const id = doc._id
+    delete doc._id
+    return { ...doc, id }
   }
 }
 
