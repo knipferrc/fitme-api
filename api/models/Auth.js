@@ -26,9 +26,26 @@ class Auth extends Mongo {
 
       const { insertedId } = await this.createDoc(userDetails)
 
-      const { _id: userId } = await this.getById(insertedId)
+      const { id: userId } = await this.getById(insertedId)
 
       return jwt.sign({ userId }, process.env.JWT_SECRET)
+    }
+  }
+
+  async login(email, password) {
+    this.setCollection('users')
+    const user = await this.getByFilter({ email })
+
+    if (user) {
+      const passwordsMatch = await bcrypt.compare(password, user.password)
+
+      if (passwordsMatch) {
+        return jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+      } else {
+        throw new Error('Invalid Credentials.')
+      }
+    } else {
+      throw new Error('User not found.')
     }
   }
 }
