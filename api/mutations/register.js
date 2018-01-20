@@ -1,14 +1,33 @@
-const pubsub = require('../../lib/pubsub')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const ObjectId = require('mongodb').ObjectID
 
-const USER_REGISTERED = 'user_registered'
+const register = async (
+  root,
+  { email, password, firstName, lastName },
+  { db }
+) => {
+  const userCollection = db.collection('users')
+  const duplicateUser = await userCollection.find({ email }).count()
 
-const register = (root, { email, password }, { db }) => {
-  console.log('EMAIL: ', email)
-  console.log('PASSWORD: ', password)
+  if (duplicateUser >= 1) throw new Error('User already exists.')
+  else {
+    const saltRounds = 10
+    const hash = bcrypt.hashSync(password, saltRounds)
 
-  pubsub.publish(USER_REGISTERED, { userRegistered: email })
+    const userDetails = {
+      email,
+      password: hash,
+      firstName,
+      lastName
+    }
 
-  return email
+    const { insertedId } = await userCollection.insertOne(userDetails)
+
+    const { _id: userId } = await userCollection.findOne(ObjectId(insertedId))
+
+    return jwt.sign({ userId }, process.env.JWT_SECRET)
+  }
 }
 
 module.exports = register
