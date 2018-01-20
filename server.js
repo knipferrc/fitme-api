@@ -8,6 +8,7 @@ const MongoClient = require('mongodb').MongoClient
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
+const Auth = require('./api/models/Auth')
 
 require('dotenv').config()
 
@@ -29,7 +30,7 @@ app.use(
   graphqlExpress(req => ({
     schema,
     context: {
-      db: app.locals.db
+      Auth: new Auth(app.locals.db)
     }
   }))
 )
