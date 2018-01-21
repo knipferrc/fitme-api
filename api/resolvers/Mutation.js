@@ -1,7 +1,9 @@
 const register = require('../mutations/register')
+const login = require('../mutations/login')
 
 const Mutation = {
-  register
+  register,
+  login
 }
 
 module.exports = Mutation
