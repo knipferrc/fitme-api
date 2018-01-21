@@ -20,16 +20,16 @@ class Mongo {
 
   async getById(id) {
     const doc = await this.collection.findOne(ObjectId(id))
-    return this._formatId(doc)
+    return doc ? this._formatId(doc) : null
+  }
+
+  async getDocByFilter(fields) {
+    const doc = await this.collection.findOne(fields)
+    return doc ? this._formatId(doc) : null
   }
 
   getCountByFilter(fields) {
     return this.collection.find(fields).count()
-  }
-
-  async getByFilter(fields) {
-    const doc = await this.collection.find(fields)
-    return this._formatId(doc)
   }
 
   _formatId(doc) {

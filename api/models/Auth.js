@@ -34,7 +34,7 @@ class Auth extends Mongo {
 
   async login(email, password) {
     this.setCollection('users')
-    const user = await this.getByFilter({ email })
+    const user = await this.getDocByFilter({ email })
 
     if (user) {
       const passwordsMatch = await bcrypt.compare(password, user.password)
