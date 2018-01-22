@@ -8,10 +8,10 @@ const MongoClient = require('mongodb').MongoClient
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
-const Auth = require('./api/models/Auth')
 
 require('dotenv').config()
 
+const Auth = require('./api/models/Auth')
 const schema = require('./api')
 
 const app = express()

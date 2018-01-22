@@ -5,11 +5,6 @@ class Mongo {
     this.db = db
   }
 
-  // set collection(collectionName) {
-  //   console.log('COLLECTION NAME: ', collectionName)
-  //   this.collection = this.db.collection(collectionName)
-  // }
-
   setCollection(collectionName) {
     this.collection = this.db.collection(collectionName)
   }
