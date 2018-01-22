@@ -51,6 +51,13 @@ class Auth extends Mongo {
       throw new Error('User not found.')
     }
   }
+
+  async getCurrentUser(accesstoken) {
+    this.setCollection('users')
+    const { userId } = await jwt.verify(accesstoken, process.env.JWT_SECRET)
+    const user = await this.getById(userId)
+    return user
+  }
 }
 
 module.exports = Auth

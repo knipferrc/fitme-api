@@ -1,5 +1,4 @@
-const currentUser = (root, { userId }, { db }) => {
-  return userId
-}
+const currentUser = (root, { accesstoken }, { Auth }) =>
+  Auth.getCurrentUser(accesstoken)
 
 module.exports = currentUser
