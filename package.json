@@ -6,7 +6,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "dev": "NODE_ENV=development nodemon server",
-    "start": "NODE_ENV=production node server",
+    "start": "node server",
     "precommit": "lint-staged",
     "format": "prettier --write \"{,!(node_modules)/**/}*.js\""
   },
