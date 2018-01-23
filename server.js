@@ -42,12 +42,9 @@ app.use(
   })
 )
 
-console.log('CONNECTION STRING: ', process.env.DB_CONNECTION_STRING)
-
 MongoClient.connect(process.env.DB_CONNECTION_STRING)
   .catch(err => console.error(err.stack))
   .then(client => {
-    console.log('CLIENT: ', client)
     app.locals.db = client.db('fitme')
     console.log('Database connection successful.')
   })
