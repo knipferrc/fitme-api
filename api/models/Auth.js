@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const Mongo = require('./Mongo')
-const UserType = require('../../lib/constants/UserType')
+const UserType = require('../utils/constants/UserType')
 
 class Auth extends Mongo {
   constructor(db) {

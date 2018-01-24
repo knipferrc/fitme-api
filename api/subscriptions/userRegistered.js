@@ -1,4 +1,4 @@
-const pubsub = require('../../lib/pubsub')
+const pubsub = require('../utils/pubsub')
 
 const USER_REGISTERED = 'user_registered'
 
