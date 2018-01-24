@@ -1,6 +1,6 @@
 const Query = `
   type Query {
-		currentUser(accesstoken: String!): User
+		currentUser(accesstoken: String): User
 	}
 `
 
