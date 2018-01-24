@@ -33,7 +33,12 @@ class Auth extends Mongo {
 
       const { id: userId } = await this.getById(insertedId)
 
-      return jwt.sign({ userId }, process.env.JWT_SECRET)
+      const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET)
+
+      return {
+        accessToken,
+        role: userDetails.role
+      }
     }
   }
 
@@ -45,7 +50,14 @@ class Auth extends Mongo {
     if (user) {
       const passwordsMatch = await bcrypt.compare(password, user.password)
       if (passwordsMatch) {
-        return jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+        const accessToken = jwt.sign(
+          { userId: user.id },
+          process.env.JWT_SECRET
+        )
+        return {
+          accessToken,
+          role: user.role
+        }
       } else {
         throw new Error('Invalid Credentials.')
       }
