@@ -21,7 +21,7 @@ class Auth extends Mongo {
 
       const hash = await bcrypt.hash(password, saltRounds)
 
-      const userDetails = {
+      const user = {
         email,
         password: hash,
         firstName,
@@ -29,7 +29,7 @@ class Auth extends Mongo {
         role: UserType.TRAINER
       }
 
-      const { insertedId } = await this.createDoc(userDetails)
+      const { insertedId } = await this.createDoc(user)
 
       const { id: userId } = await this.getById(insertedId)
 
@@ -37,7 +37,10 @@ class Auth extends Mongo {
 
       return {
         accessToken,
-        role: userDetails.role
+        role: user.role,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
       }
     }
   }
@@ -56,7 +59,10 @@ class Auth extends Mongo {
         )
         return {
           accessToken,
-          role: user.role
+          role: user.role,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName
         }
       } else {
         throw new Error('Invalid Credentials.')
