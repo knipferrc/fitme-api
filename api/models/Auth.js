@@ -67,9 +67,6 @@ class Auth extends Mongo {
   }
 
   async getCurrentUser(accesstoken) {
-    if (!accesstoken) {
-      return
-    }
     this.setCollection('users')
     const { userId } = await jwt.verify(accesstoken, process.env.JWT_SECRET)
     return this.getById(userId)
