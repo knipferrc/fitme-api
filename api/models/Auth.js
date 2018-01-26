@@ -77,6 +77,12 @@ class Auth extends Mongo {
     const { userId } = await jwt.verify(accesstoken, process.env.JWT_SECRET)
     return this.getById(userId)
   }
+
+  async setUserOnline(accesstoken) {
+    this.setCollection('users')
+    const { userId } = await jwt.verify(accesstoken, process.env.JWT_SECRET)
+    return this.updateDoc({ id: userId, isOnline: true })
+  }
 }
 
 module.exports = Auth

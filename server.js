@@ -61,7 +61,11 @@ MongoClient.connect(process.env.DB_CONNECTION_STRING)
           execute,
           subscribe,
           schema,
-          onConnect: () => console.log('Client connected')
+          onConnect: ({ authToken }) => {
+            //TODO - Verify user is authorized, abstract this out...
+            const auth = new Auth(app.locals.db)
+            auth.setUserOnline(authToken)
+          }
         },
         {
           server: ws,
