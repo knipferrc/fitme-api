@@ -23,6 +23,20 @@ class Mongo {
     return doc ? this._formatId(doc) : null
   }
 
+  async updateDoc(fields) {
+    const id = fields.id
+    delete fields.id
+
+    console.log('FIELDS: ', fields)
+
+    return this.collection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: { ...fields }
+      }
+    )
+  }
+
   getCountByFilter(fields) {
     return this.collection.find(fields).count()
   }
