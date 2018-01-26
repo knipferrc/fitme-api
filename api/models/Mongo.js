@@ -27,8 +27,6 @@ class Mongo {
     const id = fields.id
     delete fields.id
 
-    console.log('FIELDS: ', fields)
-
     return this.collection.updateOne(
       { _id: new ObjectId(id) },
       {
