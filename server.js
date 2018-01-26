@@ -27,7 +27,7 @@ app.use(compression())
 app.use(hpp())
 app.use(
   '/graphql',
-  graphqlExpress(req => ({
+  graphqlExpress(() => ({
     schema,
     context: {
       Auth: new Auth(app.locals.db)
