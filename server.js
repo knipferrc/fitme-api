@@ -72,8 +72,7 @@ MongoClient.connect(process.env.DB_CONNECTION_STRING)
           execute,
           subscribe,
           schema,
-          onConnect: ({ authToken }) =>
-            console.log('CLIENT CONNECTED ', authToken)
+          onConnect: () => console.log('CLIENT CONNECTED')
         },
         {
           server: ws,
