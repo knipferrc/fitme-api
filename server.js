@@ -1,4 +1,5 @@
 const express = require('express')
+const session = require('express-session')
 const helmet = require('helmet')
 const hpp = require('hpp')
 const cors = require('cors')
@@ -25,24 +26,24 @@ const PORT = 5000
 app.disable('x-powered-by')
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cors())
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, maxAge: 4 * 60 * 60 * 1000 }
+  })
+)
+// app.use(cors())
 app.use(helmet())
 app.use(compression())
 app.use(hpp())
 
 app.use(passport.initialize())
+app.use(passport.session())
 
 app.use('/register', register)
 app.use('/login', login)
-
-// Probably should only serialize the id
-passport.serializeUser((user, done) => {
-  done(null, user)
-})
-
-passport.deserializeUser((user, done) => {
-  done(null, user)
-})
 
 app.use(
   '/graphql',
