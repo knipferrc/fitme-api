@@ -1,6 +1,9 @@
 const passport = require('passport')
+const jwt = require('jsonwebtoken')
 const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
+const LocalStrategy = require('passport-local').Strategy
+const bcrypt = require('bcrypt')
 
 const Auth = require('../models/Mongo')
 
@@ -19,14 +22,52 @@ module.exports = (passport, db) => {
           const user = await AuthModel.getById(payload.userId)
 
           if (!user) {
-            return done(null, false)
+            return done(null, false, { message: 'Could not find user!' })
           } else {
-            done(null, user)
+            return done(null, user)
           }
         } catch (error) {
-          done(error, false)
+          return done(error, false)
         }
       }
     )
-  )
+  ),
+    passport.use(
+      new LocalStrategy(
+        {
+          usernameField: 'email',
+          passwordField: 'password'
+        },
+        async (email, password, done) => {
+          const AuthModel = new Auth(db)
+          AuthModel.setCollection('users')
+
+          const user = await AuthModel.getDocByFilter({ email })
+
+          if (user) {
+            const passwordsMatch = await bcrypt.compare(password, user.password)
+            if (!passwordsMatch) {
+              const error = new Error('Invalid Credentials.')
+              error.name = 'IncorrectCredentials'
+              return done(error)
+            }
+            const accessToken = jwt.sign(
+              { userId: user.id },
+              process.env.JWT_SECRET
+            )
+            const data = {
+              accessToken,
+              role: user.role,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName
+            }
+            return done(null, data)
+          } else {
+            const error = new Error('No user found.')
+            return done(error)
+          }
+        }
+      )
+    )
 }
