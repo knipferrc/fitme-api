@@ -31,44 +31,63 @@ module.exports = (passport, db) => {
         }
       }
     )
-  ),
-    passport.use(
-      new LocalStrategy(
-        {
-          usernameField: 'email',
-          passwordField: 'password'
-        },
-        async (email, password, done) => {
-          const AuthModel = new Auth(db)
-          AuthModel.setCollection('users')
+  )
+  passport.use(
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password'
+      },
+      async (email, password, done) => {
+        const AuthModel = new Auth(db)
+        AuthModel.setCollection('users')
 
-          const user = await AuthModel.getDocByFilter({ email })
+        const user = await AuthModel.getDocByFilter({ email })
 
-          if (user) {
-            const passwordsMatch = await bcrypt.compare(password, user.password)
-            if (!passwordsMatch) {
-              const error = new Error('The password you entered is incorrect.')
-              error.name = 'IncorrectCredentials'
-              return done(error)
-            }
-            const accessToken = jwt.sign(
-              { userId: user.id },
-              process.env.JWT_SECRET
-            )
-            const data = {
-              accessToken,
-              role: user.role,
-              email: user.email,
-              firstName: user.firstName,
-              lastName: user.lastName
-            }
-            return done(null, data)
-          } else {
-            const error = new Error('User not found.')
-            error.name = 'UserNotFound'
+        if (user) {
+          const passwordsMatch = await bcrypt.compare(password, user.password)
+          if (!passwordsMatch) {
+            const error = new Error('The password you entered is incorrect.')
+            error.name = 'IncorrectCredentials'
             return done(error)
           }
+          const accessToken = jwt.sign(
+            { userId: user.id },
+            process.env.JWT_SECRET
+          )
+          const data = {
+            accessToken,
+            role: user.role,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName
+          }
+          return done(null, data)
+        } else {
+          const error = new Error('User not found.')
+          error.name = 'UserNotFound'
+          return done(error)
         }
-      )
+      }
     )
+  )
+
+  // Probably should serialize the id
+  passport.serializeUser((user, done) => {
+    done(null, user.email)
+  })
+
+  passport.deserializeUser(async (email, done) => {
+    const AuthModel = new Auth(db)
+    AuthModel.setCollection('users')
+
+    const user = await AuthModel.getDocByFilter({ email })
+
+    if (user) {
+      done(null, user)
+    } else {
+      const error = new Error('No user found')
+      done(error)
+    }
+  })
 }
