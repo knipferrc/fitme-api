@@ -47,7 +47,7 @@ module.exports = (passport, db) => {
           if (user) {
             const passwordsMatch = await bcrypt.compare(password, user.password)
             if (!passwordsMatch) {
-              const error = new Error('Invalid Credentials.')
+              const error = new Error('The password you entered is incorrect.')
               error.name = 'IncorrectCredentials'
               return done(error)
             }
@@ -64,7 +64,8 @@ module.exports = (passport, db) => {
             }
             return done(null, data)
           } else {
-            const error = new Error('No user found.')
+            const error = new Error('User not found.')
+            error.name = 'UserNotFound'
             return done(error)
           }
         }
