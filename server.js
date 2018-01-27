@@ -35,6 +35,15 @@ app.use(passport.initialize())
 app.use('/register', register)
 app.use('/login', login)
 
+// Probably should only serialize the id
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+
+passport.deserializeUser((user, done) => {
+  done(null, user)
+})
+
 app.use(
   '/graphql',
   graphqlExpress(() => ({
