@@ -8,8 +8,12 @@ const MongoClient = require('mongodb').MongoClient
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
+const passport = require('passport')
 
 require('dotenv').config()
+
+const register = require('./api/routes/register')
+const login = require('./api/routes/login')
 
 const Auth = require('./api/models/Auth')
 const schema = require('./api')
@@ -25,6 +29,12 @@ app.use(cors())
 app.use(helmet())
 app.use(compression())
 app.use(hpp())
+
+app.use(passport.initialize())
+
+app.use('/register', register)
+app.use('/login', login)
+
 app.use(
   '/graphql',
   graphqlExpress(() => ({
@@ -46,6 +56,7 @@ MongoClient.connect(process.env.DB_CONNECTION_STRING)
   .catch(err => console.error(err.stack))
   .then(client => {
     app.locals.db = client.db('fitme')
+    require('./api/utils/passport')(passport, app.locals.db)
     console.log('Database connection successful.')
   })
   .then(() => {
