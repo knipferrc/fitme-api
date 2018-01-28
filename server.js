@@ -1,6 +1,7 @@
 const express = require('express')
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
-const MongoClient = require('mongodb').MongoClient
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
@@ -23,12 +24,18 @@ app.use(middleware())
 app.use('/register', register)
 app.use('/login', login)
 
+const db = mongoose.connect(process.env.DB_CONNECTION_STRING, {
+  useMongoClient: true
+})
+
+require('./utils/passport')(passport)
+
 app.use(
   '/graphql',
   graphqlExpress(() => ({
     schema,
     context: {
-      Auth: new Auth(app.locals.db)
+      Auth: new Auth(db)
     }
   }))
 )
@@ -40,32 +47,23 @@ app.use(
   })
 )
 
-MongoClient.connect(process.env.DB_CONNECTION_STRING)
-  .catch(err => console.error(err.stack))
-  .then(client => {
-    app.locals.db = client.db('fitme')
-    require('./utils/passport')(passport, app.locals.db)
-    console.log('Database connection successful.')
-  })
-  .then(() => {
-    const ws = createServer(app)
+const ws = createServer(app)
 
-    ws.listen(PORT, err => {
-      if (err) throw err
+ws.listen(PORT, err => {
+  if (err) throw err
 
-      console.log(`Server is now running on http://localhost:${PORT}`)
+  console.log(`Server is now running on http://localhost:${PORT}`)
 
-      new SubscriptionServer(
-        {
-          execute,
-          subscribe,
-          schema,
-          onConnect: () => console.log('CLIENT CONNECTED')
-        },
-        {
-          server: ws,
-          path: '/subscriptions'
-        }
-      )
-    })
-  })
+  new SubscriptionServer(
+    {
+      execute,
+      subscribe,
+      schema,
+      onConnect: () => console.log('CLIENT CONNECTED')
+    },
+    {
+      server: ws,
+      path: '/subscriptions'
+    }
+  )
+})
