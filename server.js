@@ -10,6 +10,7 @@ const passport = require('passport')
 const middleware = require('./middleware')
 const register = require('./routes/register')
 const login = require('./routes/login')
+const logout = require('./routes/logout')
 const Auth = require('./models/Auth')
 const schema = require('./schema')
 
@@ -23,6 +24,7 @@ app.disable('x-powered-by')
 app.use(middleware())
 app.use('/register', register)
 app.use('/login', login)
+app.use('/logout', logout)
 
 const db = mongoose.connect(process.env.DB_CONNECTION_STRING, {
   useMongoClient: true
