@@ -4,9 +4,9 @@ const { ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 
-const Auth = require('../models/Mongo')
+const User = require('../mongooseModels/User')
 
-module.exports = (passport, db) => {
+module.exports = passport => {
   passport.use(
     new JwtStrategy(
       {
@@ -14,16 +14,13 @@ module.exports = (passport, db) => {
         secretOrKey: process.env.JWT_SECRET
       },
       async (payload, done) => {
-        const AuthModel = new Auth(db)
-        AuthModel.setCollection('users')
-
         try {
-          const user = await AuthModel.getById(payload.userId)
+          const foundUser = await User.findById(payload.userId)
 
-          if (!user) {
+          if (!foundUser) {
             return done(null, false, { message: 'Could not find user!' })
           } else {
-            return done(null, user)
+            return done(null, foundUser)
           }
         } catch (error) {
           return done(error, false)
@@ -38,35 +35,36 @@ module.exports = (passport, db) => {
         passwordField: 'password'
       },
       async (email, password, done) => {
-        const AuthModel = new Auth(db)
-        AuthModel.setCollection('users')
+        const foundUser = await User.findOne({ email })
 
-        const user = await AuthModel.getDocByFilter({ email })
-
-        if (user) {
-          const passwordsMatch = await bcrypt.compare(password, user.password)
-          if (!passwordsMatch) {
-            const error = new Error('The password you entered is incorrect.')
-            error.name = 'IncorrectCredentials'
-            return done(error)
-          }
-          const accessToken = jwt.sign(
-            { userId: user.id },
-            process.env.JWT_SECRET
-          )
-          const data = {
-            accessToken,
-            role: user.role,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName
-          }
-          return done(null, data)
-        } else {
+        if (!foundUser) {
           const error = new Error('User not found.')
           error.name = 'UserNotFound'
           return done(error)
         }
+
+        const passwordsMatch = await foundUser.validPassword(password)
+
+        if (!passwordsMatch) {
+          const error = new Error('The password you entered is incorrect.')
+          error.name = 'IncorrectCredentials'
+          return done(error)
+        }
+
+        const accessToken = jwt.sign(
+          { userId: foundUser._id },
+          process.env.JWT_SECRET
+        )
+
+        const data = {
+          accessToken,
+          role: foundUser.role,
+          email: foundUser.email,
+          firstName: foundUser.firstName,
+          lastName: foundUser.lastName
+        }
+
+        return done(null, data)
       }
     )
   )
@@ -77,13 +75,10 @@ module.exports = (passport, db) => {
   })
 
   passport.deserializeUser(async (email, done) => {
-    const AuthModel = new Auth(db)
-    AuthModel.setCollection('users')
+    const foundUser = await User.findOne({ email })
 
-    const user = await AuthModel.getDocByFilter({ email })
-
-    if (user) {
-      done(null, user)
+    if (foundUser) {
+      done(null, foundUser)
     } else {
       const error = new Error('No user found')
       done(error)
