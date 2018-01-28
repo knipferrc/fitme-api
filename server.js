@@ -1,9 +1,4 @@
 const express = require('express')
-const session = require('express-session')
-const helmet = require('helmet')
-const hpp = require('hpp')
-const cors = require('cors')
-const compression = require('compression')
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 const MongoClient = require('mongodb').MongoClient
 const { SubscriptionServer } = require('subscriptions-transport-ws')
@@ -11,37 +6,20 @@ const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
 const passport = require('passport')
 
+const middleware = require('./middleware')
+const register = require('./routes/register')
+const login = require('./routes/login')
+const Auth = require('./models/Auth')
+const schema = require('./schema')
+
 require('dotenv').config()
-
-const register = require('./api/routes/register')
-const login = require('./api/routes/login')
-
-const Auth = require('./api/models/Auth')
-const schema = require('./api')
 
 const app = express()
 
 const PORT = 5000
 
 app.disable('x-powered-by')
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, maxAge: 4 * 60 * 60 * 1000 }
-  })
-)
-// app.use(cors())
-app.use(helmet())
-app.use(compression())
-app.use(hpp())
-
-app.use(passport.initialize())
-app.use(passport.session())
-
+app.use(middleware())
 app.use('/register', register)
 app.use('/login', login)
 
@@ -66,7 +44,7 @@ MongoClient.connect(process.env.DB_CONNECTION_STRING)
   .catch(err => console.error(err.stack))
   .then(client => {
     app.locals.db = client.db('fitme')
-    require('./api/utils/passport')(passport, app.locals.db)
+    require('./utils/passport')(passport, app.locals.db)
     console.log('Database connection successful.')
   })
   .then(() => {
