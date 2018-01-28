@@ -1,8 +1,7 @@
-const passport = require('passport')
 const router = require('express').Router()
 const Auth = require('../models/Auth')
 
-router.post('/', async (req, res) => {
+router.post('/', async req => {
   const AuthModel = new Auth(req.app.locals.db)
   AuthModel.setCollection('users')
 
