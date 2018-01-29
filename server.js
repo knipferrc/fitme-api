@@ -7,6 +7,7 @@ const { createServer } = require('http')
 const passport = require('passport')
 
 const Workout = require('./models/Workout')
+const Exercise = require('./models/Exercise')
 const User = require('./models/User')
 const middleware = require('./middleware')
 const register = require('./routes/register')
@@ -38,7 +39,8 @@ app.use(
     schema,
     context: {
       User: new User(),
-      Workout: new Workout()
+      Workout: new Workout(),
+      Exercise: new Exercise()
     }
   }))
 )
