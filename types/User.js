@@ -6,6 +6,7 @@ type User {
   email: String
   firstName: String
   lastName: String
+  trainersId: ID
 }
 `
 

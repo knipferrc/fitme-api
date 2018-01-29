@@ -53,4 +53,11 @@ UserSchema.methods.getCurrentUser = async function(accesstoken) {
   })
 }
 
+UserSchema.methods.getTrainersClients = async function(trainerId) {
+  return this.model('User').find({
+    trainerId: trainerId,
+    role: 'CLIENT'
+  })
+}
+
 module.exports = mongoose.model('User', UserSchema)
