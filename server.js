@@ -6,6 +6,7 @@ const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
 const passport = require('passport')
 
+const Workout = require('./models/Workout')
 const User = require('./models/User')
 const middleware = require('./middleware')
 const register = require('./routes/register')
@@ -36,7 +37,8 @@ app.use(
   graphqlExpress(() => ({
     schema,
     context: {
-      User: new User()
+      User: new User(),
+      Workout: new Workout()
     }
   }))
 )

@@ -49,7 +49,7 @@ UserSchema.methods.validPassword = function(password) {
 UserSchema.methods.getCurrentUser = async function(accesstoken) {
   const { userId } = await jwt.verify(accesstoken, process.env.JWT_SECRET)
   return this.model('User').findById({
-    _id: new mongoose.Types.ObjectId(userId)
+    _id: userId
   })
 }
 
