@@ -6,6 +6,7 @@ const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
 const passport = require('passport')
 
+const Appointment = require('./models/Appointment')
 const Workout = require('./models/Workout')
 const Exercise = require('./models/Exercise')
 const User = require('./models/User')
@@ -40,7 +41,8 @@ app.use(
     context: {
       User: new User(),
       Workout: new Workout(),
-      Exercise: new Exercise()
+      Exercise: new Exercise(),
+      Appointment: new Appointment()
     }
   }))
 )
