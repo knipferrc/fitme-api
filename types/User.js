@@ -1,6 +1,5 @@
 const User = `
 type User {
-  id: String
   accessToken: String
   role: String
   email: String

@@ -2,9 +2,8 @@ const jwt = require('jsonwebtoken')
 const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local').Strategy
-const bcrypt = require('bcrypt')
 
-const User = require('../mongooseModels/User')
+const User = require('../models/User')
 
 module.exports = passport => {
   passport.use(
@@ -76,7 +75,6 @@ module.exports = passport => {
 
   passport.deserializeUser(async (email, done) => {
     const foundUser = await User.findOne({ email })
-
     if (foundUser) {
       done(null, foundUser)
     } else {

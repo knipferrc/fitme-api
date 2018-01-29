@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 
-const User = require('../mongooseModels/User')
+const User = require('../models/User')
 
 router.post('/', async (req, res) => {
   const { email, password, firstName, lastName } = req.body
