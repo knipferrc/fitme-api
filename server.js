@@ -27,7 +27,7 @@ app.use('/register', register)
 app.use('/login', login)
 app.use('/logout', logout)
 
-const db = mongoose.connect(process.env.DB_CONNECTION_STRING)
+mongoose.connect(process.env.DB_CONNECTION_STRING)
 
 require('./utils/passport')(passport)
 
