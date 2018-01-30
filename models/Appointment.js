@@ -3,28 +3,51 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const AppointmentSchema = new Schema({
-  trainerId: {
-    type: String
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  clientId: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  clientFirstName: {
+    type: String,
+    required: true
+  },
+  clientLastName: {
+    type: String,
+    required: true
+  },
+  appointmentName: {
+    type: String,
+    unique: true,
+    required: true
   },
   workoutDate: {
-    type: String
+    type: Date,
+    required: true
   },
-  clientName: {
-    type: String
-  },
-  workoutScheduled: {
-    type: String
+  workoutName: {
+    type: String,
+    required: true
   },
   startTime: {
-    type: String
+    type: Date,
+    required: true
   },
   endTime: {
-    type: String
+    type: Date,
+    required: true
   }
 })
 
-AppointmentSchema.methods.getNextAppointment = function(trainerId) {
+AppointmentSchema.methods.getTrainersNextAppointment = function(trainerId) {
   return this.model('Appointment').findOne({ createdBy: trainerId })
+}
+
+AppointmentSchema.methods.getClientsNextAppointment = function(clientId) {
+  return this.model('Appointment').findOne({ clientId: clientId })
 }
 
 module.exports = mongoose.model('Appointment', AppointmentSchema)

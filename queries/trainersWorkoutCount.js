@@ -1,4 +1,4 @@
-const trainersWorkoutCount = (root, { trainerId }, { Workout }) =>
-  Workout.trainersWorkoutCount(trainerId)
+const getTrainersWorkoutCount = (root, { trainerId }, { Workout }) =>
+  Workout.getTrainersWorkoutCount(trainerId)
 
-module.exports = trainersWorkoutCount
+module.exports = getTrainersWorkoutCount

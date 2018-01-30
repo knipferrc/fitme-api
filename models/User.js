@@ -7,6 +7,19 @@ const { ADMIN, TRAINER, CLIENT } = UserType
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
+  _id: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  accessToken: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    enum: [ADMIN, TRAINER, CLIENT],
+    default: TRAINER
+  },
   email: {
     type: String,
     lowercase: true,
@@ -25,10 +38,8 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  role: {
-    type: String,
-    enum: [ADMIN, TRAINER, CLIENT],
-    default: TRAINER
+  whosClient: {
+    type: Schema.Types.ObjectId
   }
 })
 
@@ -46,8 +57,8 @@ UserSchema.methods.validPassword = function(password) {
   return bcrypt.compare(password, this.password)
 }
 
-UserSchema.methods.getCurrentUser = async function(accesstoken) {
-  const { userId } = await jwt.verify(accesstoken, process.env.JWT_SECRET)
+UserSchema.methods.getCurrentUser = async function(accessToken) {
+  const { userId } = await jwt.verify(accessToken, process.env.JWT_SECRET)
   return this.model('User').findById({
     _id: userId
   })
@@ -55,8 +66,8 @@ UserSchema.methods.getCurrentUser = async function(accesstoken) {
 
 UserSchema.methods.getTrainersClients = async function(trainerId) {
   return this.model('User').find({
-    trainerId: trainerId,
-    role: 'CLIENT'
+    whosClient: trainerId,
+    role: CLIENT
   })
 }
 

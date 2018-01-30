@@ -1,12 +1,13 @@
 const User = `
 type User {
-  _id: ID
-  accessToken: String
-  role: String
-  email: String
-  firstName: String
-  lastName: String
-  trainersId: ID
+  _id: ID!
+  accessToken: String!
+  role: String!
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  whosClient: ID
 }
 `
 

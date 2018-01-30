@@ -1,6 +1,7 @@
 const Exercise = `
   type Exercise {
-    exerciseName: String
+    createdBy: ID!
+    exerciseName: String!
     muscleGroup: String
     equipmentType: String
     exerciseType: String

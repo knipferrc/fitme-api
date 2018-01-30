@@ -1,7 +1,8 @@
 const Workout = `
 type Workout {
-  name: String!
-  exercises: Exercise
+  workoutName: String!
+  exercises: [Exercise]
+  createdBy: ID!
 }
 `
 

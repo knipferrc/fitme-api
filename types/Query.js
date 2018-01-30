@@ -1,10 +1,10 @@
 const Query = `
   type Query {
-    currentUser(accesstoken: String!): User
+    currentUser(accessToken: String!): User
     trainersWorkoutCount(trainerId: ID!): Int
     trainersExerciseCount(trainerId: ID!): Int
-    getNextAppointment(trainerId: ID!): Appointment,
-    getTrainersClients(trainerId: ID!): [User]
+    trainersNextAppointment(trainerId: ID!): Appointment,
+    trainersClients(trainerId: ID!): [User]
 	}
 `
 

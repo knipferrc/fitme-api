@@ -3,6 +3,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ExerciseSchema = new Schema({
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
   exerciseName: {
     type: String,
     required: true,
@@ -22,7 +26,7 @@ const ExerciseSchema = new Schema({
   }
 })
 
-ExerciseSchema.methods.trainersExerciseCount = function(trainerId) {
+ExerciseSchema.methods.getTrainersExerciseCount = function(trainerId) {
   return this.model('Exercise')
     .find({ createdBy: trainerId })
     .count()

@@ -1,4 +1,4 @@
-const currentUser = (root, { accesstoken }, { User }) =>
-  User.getCurrentUser(accesstoken)
+const currentUser = (root, { accessToken }, { User }) =>
+  User.getCurrentUser(accessToken)
 
 module.exports = currentUser

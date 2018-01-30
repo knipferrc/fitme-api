@@ -1,11 +1,14 @@
 const Appointment = `
   type Appointment {
-    trainerId: ID
-    workoutDate: String
-    clientName: String,
-    workoutScheduled: String
-    startTime: String
-    endTime: String
+    createdBy: ID!
+    clientId: ID!
+    clientFirstName: String!
+    clientLastName: String!
+    appointmentName: String!
+    workoutDate: String!
+    workoutName: String!
+    startTime: String!
+    endTime: String!
   }
 `
 
