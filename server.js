@@ -14,6 +14,7 @@ const middleware = require('./middleware')
 const register = require('./routes/register')
 const login = require('./routes/login')
 const logout = require('./routes/logout')
+const googleLogin = require('./routes/googleLogin')
 const schema = require('./schema')
 
 require('dotenv').config()
@@ -29,6 +30,7 @@ app.use(middleware())
 app.use('/register', register)
 app.use('/login', login)
 app.use('/logout', logout)
+app.use('/google/auth', googleLogin)
 
 mongoose.connect(process.env.DB_CONNECTION_STRING)
 
