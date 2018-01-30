@@ -64,7 +64,7 @@ UserSchema.methods.getCurrentUser = async function(accessToken) {
   })
 }
 
-UserSchema.methods.getTrainersClients = async function(trainerId) {
+UserSchema.methods.getTrainersTotalClients = function(trainerId) {
   return this.model('User').find({
     whosClient: trainerId,
     role: CLIENT

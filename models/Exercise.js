@@ -26,7 +26,7 @@ const ExerciseSchema = new Schema({
   }
 })
 
-ExerciseSchema.methods.getTrainersExerciseCount = function(trainerId) {
+ExerciseSchema.methods.getTrainersTotalExercises = function(trainerId) {
   return this.model('Exercise')
     .find({ createdBy: trainerId })
     .count()

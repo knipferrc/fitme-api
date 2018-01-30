@@ -1,15 +1,15 @@
 const currentUser = require('../queries/currentUser')
-const trainersWorkoutCount = require('../queries/trainersWorkoutCount')
-const trainersExerciseCount = require('../queries/trainersExerciseCount')
+const trainersTotalWorkouts = require('../queries/trainersTotalWorkouts')
+const trainersTotalExercises = require('../queries/trainersTotalExercises')
 const trainersNextAppointment = require('../queries/trainersNextAppointment')
-const trainersClients = require('../queries/trainersClients')
+const trainersTotalClients = require('../queries/trainersTotalClients')
 
 const Query = {
   currentUser,
-  trainersWorkoutCount,
-  trainersExerciseCount,
+  trainersTotalWorkouts,
+  trainersTotalExercises,
   trainersNextAppointment,
-  trainersClients
+  trainersTotalClients
 }
 
 module.exports = Query
