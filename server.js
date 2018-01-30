@@ -24,13 +24,13 @@ const PORT = 5000
 
 mongoose.Promise = global.Promise
 
+mongoose.connect(process.env.DB_CONNECTION_STRING)
+
 app.disable('x-powered-by')
 app.use(middleware())
 app.use('/register', register)
 app.use('/login', login)
 app.use('/logout', logout)
-
-mongoose.connect(process.env.DB_CONNECTION_STRING)
 
 require('./utils/passport')(passport)
 
