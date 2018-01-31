@@ -71,4 +71,8 @@ UserSchema.methods.getTrainersTotalClients = function(trainerId) {
   })
 }
 
+UserSchema.methods.getAllTrainers = async function() {
+  return await this.model('User').find({ role: TRAINER })
+}
+
 module.exports = mongoose.model('User', UserSchema)
