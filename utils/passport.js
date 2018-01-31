@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const JwtStrategy = require('passport-jwt').Strategy
 const { ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local').Strategy
-const GoogleStrategy = require('passport-google-oauth20').Strategy
+const GoogleTokenStrategy = require('passport-google-token').Strategy
 
 const User = require('../models/User')
 
@@ -70,14 +70,13 @@ module.exports = passport => {
   )
 
   passport.use(
-    new GoogleStrategy(
+    new GoogleTokenStrategy(
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'http://localhost:5000/google/auth/callback'
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET
       },
       (accessToken, refreshToken, profile, done) => {
-        console.log('ACCESS TOKEN: ', accessToken)
+        console.log('FOUND ACCESS TOKEN: ', profile)
       }
     )
   )
