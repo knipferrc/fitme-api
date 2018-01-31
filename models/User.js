@@ -7,13 +7,8 @@ const { ADMIN, TRAINER, CLIENT } = UserType
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
-  _id: {
-    type: Schema.Types.ObjectId,
-    required: true
-  },
   accessToken: {
-    type: String,
-    required: true
+    type: String
   },
   role: {
     type: String,
@@ -43,15 +38,65 @@ const UserSchema = new Schema({
   }
 })
 
-UserSchema.pre('save', async function(next) {
-  const user = this
-  if (this.isModified('password') || this.isNew) {
-    const saltRounds = 10
-    const hash = await bcrypt.hash(user.password, saltRounds)
-    user.password = hash
-    next()
+UserSchema.methods.login = async function(email, password) {
+  const user = await this.model('User').findOne({ email })
+  if (user) {
+    const passwordsMatch = await bcrypt.compare(password, user.password)
+    if (passwordsMatch) {
+      const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+      return {
+        accessToken,
+        role: user.role,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+      }
+    } else {
+      throw new Error('Invalid Credentials.')
+    }
+  } else {
+    throw new Error('User not found.')
   }
-})
+}
+
+UserSchema.methods.register = async function(
+  email,
+  password,
+  firstName,
+  lastName
+) {
+  const duplicateUser = await this.model('User').findOne({ email })
+  if (duplicateUser) {
+    throw new Error('User already exists.')
+  } else {
+    const saltRounds = 10
+
+    const hash = await bcrypt.hash(password, saltRounds)
+
+    const user = {
+      email,
+      password: hash,
+      firstName,
+      lastName,
+      role: TRAINER
+    }
+
+    const createdUser = await this.model('User').create(user)
+
+    const accessToken = jwt.sign(
+      { userId: createdUser._id },
+      process.env.JWT_SECRET
+    )
+
+    return {
+      accessToken,
+      role: user.role,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName
+    }
+  }
+}
 
 UserSchema.methods.validPassword = function(password) {
   return bcrypt.compare(password, this.password)
