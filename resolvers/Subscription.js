@@ -1,7 +1,7 @@
-const userRegistered = require('../subscriptions/userRegistered')
+const newOrUpdatedTrainer = require('../subscriptions/newOrUpdatedTrainer')
 
 const Subscription = {
-  userRegistered
+  newOrUpdatedTrainer
 }
 
 module.exports = Subscription

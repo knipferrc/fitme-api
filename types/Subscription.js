@@ -1,6 +1,6 @@
 const Subscription = `
   type Subscription {
-    userRegistered: String
+    newOrUpdatedTrainer: User
   }
 `
 
