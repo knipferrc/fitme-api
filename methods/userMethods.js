@@ -6,7 +6,7 @@ const moment = require('moment')
 const UserType = require('../utils/constants/UserType')
 const { ADMIN, TRAINER, CLIENT } = UserType
 
-userMethods = UserSchema => {
+const userMethods = UserSchema => {
   UserSchema.methods.login = async function(email, password) {
     const user = await this.model('User').findOne({ email })
     if (user) {
@@ -131,7 +131,7 @@ userMethods = UserSchema => {
       }
     )
 
-    return jwt.sign({ userId: createdUser._id }, process.env.JWT_SECRET)
+    return jwt.sign({ userId: updatedUser._id }, process.env.JWT_SECRET)
   }
 
   UserSchema.methods.getCurrentUser = async function(accessToken) {
