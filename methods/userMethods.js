@@ -142,10 +142,9 @@ const userMethods = UserSchema => {
   }
 
   UserSchema.methods.getTrainersTotalClients = function(trainerId) {
-    return this.model('User').find({
-      whosClient: trainerId,
-      role: CLIENT
-    })
+    return this.model('User')
+      .find({ whosClient: trainerId })
+      .count()
   }
 
   UserSchema.methods.getAllTrainers = function() {
