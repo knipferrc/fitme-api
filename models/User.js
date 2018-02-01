@@ -90,6 +90,7 @@ UserSchema.methods.register = async function(
 
     return {
       accessToken,
+      _id: createdUser._id,
       role: user.role,
       email: user.email,
       firstName: user.firstName,

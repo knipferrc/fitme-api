@@ -6,7 +6,7 @@ const { withFilter } = require('graphql-subscriptions')
 const newOrUpdatedTrainer = {
   subscribe: withFilter(
     () => pubsub.asyncIterator(SubscriptionType.NEW_OR_UPDATED_TRAINER),
-    payload => payload.role === UserType.TRAINER
+    payload => payload.newOrUpdatedTrainer.role === UserType.TRAINER
   )
 }
 
