@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const uuidv4 = require('uuid/v4')
+const moment = require('moment')
 
 const UserType = require('../utils/constants/UserType')
 const { ADMIN, TRAINER, CLIENT } = UserType
@@ -71,6 +73,65 @@ userMethods = UserSchema => {
 
   UserSchema.methods.validPassword = function(password) {
     return bcrypt.compare(password, this.password)
+  }
+
+  UserSchema.methods.sendResetPasswordEmail = async function(email) {
+    const user = await this.model('User').findOne({ email })
+
+    if (!user) {
+      throw new Error('No user is associated with this email.')
+    }
+
+    const passwordResetToken = uuidv4()
+
+    await this.model('User').update(
+      { _id: user._id },
+      {
+        $set: {
+          passwordResetToken,
+          passwordResetExpiration: moment()
+            .add(1, 'hour')
+            .format()
+        }
+      }
+    )
+
+    //TODO - USE PRODUCTION URL
+    const passwordResetUrl = `http://localhost:1234/resetPassword?token=${passwordResetToken}`
+
+    // TODO - SEND EMAIL
+
+    return true
+  }
+
+  UserSchema.methods.resetPassword = async function(password, token) {
+    const user = await this.model('User').findOne({ passwordResetToken: token })
+
+    if (!user) {
+      throw new Error('Password reset link is invalid.')
+    }
+
+    const tokenIsExpired = moment().isAfter(user.passwordResetExpiration)
+
+    if (tokenIsExpired) {
+      throw new Error('Password reset link is invalid or expired.')
+    }
+
+    const saltRounds = 10
+    const hash = await bcrypt.hash(password, saltRounds)
+
+    const updatedUser = await this.model('User').update(
+      { _id: user._id },
+      {
+        $set: {
+          password: hash,
+          passwordResetToken: null,
+          passwordResetExpiration: null
+        }
+      }
+    )
+
+    return jwt.sign({ userId: createdUser._id }, process.env.JWT_SECRET)
   }
 
   UserSchema.methods.getCurrentUser = async function(accessToken) {
