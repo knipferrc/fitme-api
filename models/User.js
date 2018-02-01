@@ -23,8 +23,12 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  passwordResetToken: String,
-  passwordResetExpiration: String,
+  passwordResetToken: {
+    type: String
+  },
+  passwordResetExpiration: {
+    type: String
+  },
   firstName: {
     type: String,
     required: true
