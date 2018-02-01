@@ -6,7 +6,7 @@ const moment = require('moment')
 const UserType = require('../utils/constants/UserType')
 const { ADMIN, TRAINER, CLIENT } = UserType
 
-userMethods = UserSchema => {
+const userMethods = UserSchema => {
   UserSchema.methods.login = async function(email, password) {
     const user = await this.model('User').findOne({ email })
     if (user) {
@@ -131,7 +131,7 @@ userMethods = UserSchema => {
       }
     )
 
-    return jwt.sign({ userId: createdUser._id }, process.env.JWT_SECRET)
+    return jwt.sign({ userId: updatedUser._id }, process.env.JWT_SECRET)
   }
 
   UserSchema.methods.getCurrentUser = async function(accessToken) {
@@ -142,14 +142,49 @@ userMethods = UserSchema => {
   }
 
   UserSchema.methods.getTrainersTotalClients = function(trainerId) {
-    return this.model('User').find({
-      whosClient: trainerId,
-      role: CLIENT
-    })
+    return this.model('User')
+      .find({ whosClient: trainerId })
+      .count()
   }
 
   UserSchema.methods.getAllTrainers = function() {
     return this.model('User').find({ role: TRAINER })
+  }
+
+  UserSchema.methods.createClient = async function(
+    email,
+    password,
+    firstName,
+    lastName,
+    whosClient
+  ) {
+    const duplicateUser = await this.model('User').findOne({ email })
+    if (duplicateUser) {
+      throw new Error('User already exists.')
+    } else {
+      const saltRounds = 10
+
+      const hash = await bcrypt.hash(password, saltRounds)
+
+      const user = {
+        email,
+        password: hash,
+        firstName,
+        lastName,
+        role: CLIENT,
+        whosClient: whosClient
+      }
+
+      const createdUser = await this.model('User').create(user)
+
+      return {
+        _id: createdUser._id,
+        role: user.role,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+      }
+    }
   }
 }
 

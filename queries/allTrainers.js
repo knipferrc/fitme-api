@@ -1,3 +1,3 @@
-const allTrainers = (root, {}, { User }) => User.getAllTrainers()
+const allTrainers = (root, args, { User }) => User.getAllTrainers()
 
 module.exports = allTrainers
