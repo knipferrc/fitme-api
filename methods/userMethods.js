@@ -6,6 +6,15 @@ const moment = require('moment')
 const UserType = require('../utils/constants/UserType')
 const { ADMIN, TRAINER, CLIENT } = UserType
 
+const {
+  InvalidCredentialsError,
+  UserNotFoundError,
+  UserExistsError,
+  NoUserAssociatedWithEmailError,
+  PasswordResetLinkInvalidError,
+  PasswordResetLinkExpiredError
+} = require('../utils/errors')
+
 const userMethods = UserSchema => {
   UserSchema.methods.login = async function(email, password) {
     const user = await this.model('User').findOne({ email })
@@ -24,10 +33,10 @@ const userMethods = UserSchema => {
           lastName: user.lastName
         }
       } else {
-        throw new Error('Invalid Credentials.')
+        throw new InvalidCredentialsError()
       }
     } else {
-      throw new Error('User not found.')
+      throw new UserNotFoundError()
     }
   }
 
@@ -39,7 +48,7 @@ const userMethods = UserSchema => {
   ) {
     const duplicateUser = await this.model('User').findOne({ email })
     if (duplicateUser) {
-      throw new Error('User already exists.')
+      throw new UserExistsError()
     } else {
       const saltRounds = 10
 
@@ -79,7 +88,7 @@ const userMethods = UserSchema => {
     const user = await this.model('User').findOne({ email })
 
     if (!user) {
-      throw new Error('No user is associated with this email.')
+      throw new NoUserAssociatedWithEmailError()
     }
 
     const passwordResetToken = uuidv4()
@@ -108,13 +117,13 @@ const userMethods = UserSchema => {
     const user = await this.model('User').findOne({ passwordResetToken: token })
 
     if (!user) {
-      throw new Error('Password reset link is invalid.')
+      throw new PasswordResetLinkInvalidError()
     }
 
     const tokenIsExpired = moment().isAfter(user.passwordResetExpiration)
 
     if (tokenIsExpired) {
-      throw new Error('Password reset link is invalid or expired.')
+      throw new PasswordResetLinkExpiredError()
     }
 
     const saltRounds = 10
@@ -160,7 +169,7 @@ const userMethods = UserSchema => {
   ) {
     const duplicateUser = await this.model('User').findOne({ email })
     if (duplicateUser) {
-      throw new Error('User already exists.')
+      throw new UserExistsError()
     } else {
       const saltRounds = 10
 
