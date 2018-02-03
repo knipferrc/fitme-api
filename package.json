@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
-    "eslint": "^4.16.0",
+    "eslint": "^4.17.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.1.0",
     "nodemon": "^1.14.12",
