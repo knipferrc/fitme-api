@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
+const { formatError } = require('apollo-errors')
 
 const Appointment = require('./models/Appointment')
 const Workout = require('./models/Workout')
@@ -28,6 +29,7 @@ app.use(
   '/graphql',
   graphqlExpress(() => ({
     schema,
+    formatError,
     context: {
       User: new User(),
       Workout: new Workout(),
