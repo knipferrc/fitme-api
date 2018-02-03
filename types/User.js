@@ -7,7 +7,7 @@ type User {
   password: String!
   firstName: String!
   lastName: String!
-  whosClient: ID
+  trainerId: ID
 }
 `
 

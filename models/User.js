@@ -37,7 +37,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  whosClient: {
+  trainerId: {
     type: Schema.Types.ObjectId
   }
 })

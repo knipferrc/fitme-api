@@ -6,6 +6,7 @@ const Query = `
     trainersNextAppointment(trainerId: ID!): Appointment,
     trainersTotalClients(trainerId: ID!): Int
     allTrainers: [User]
+    trainersClients(trainerId: ID!): [User]
 	}
 `
 

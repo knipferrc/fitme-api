@@ -152,8 +152,12 @@ const userMethods = UserSchema => {
 
   UserSchema.methods.getTrainersTotalClients = function(trainerId) {
     return this.model('User')
-      .find({ whosClient: trainerId })
+      .find({ trainerId: trainerId })
       .count()
+  }
+
+  UserSchema.methods.getTrainersClients = function(trainerId) {
+    return this.model('User').find({ trainerId: trainerId })
   }
 
   UserSchema.methods.getAllTrainers = function() {
@@ -165,7 +169,7 @@ const userMethods = UserSchema => {
     password,
     firstName,
     lastName,
-    whosClient
+    trainerId
   ) {
     const duplicateUser = await this.model('User').findOne({ email })
     if (duplicateUser) {
@@ -181,7 +185,7 @@ const userMethods = UserSchema => {
         firstName,
         lastName,
         role: CLIENT,
-        whosClient: whosClient
+        trainerId: trainerId
       }
 
       const createdUser = await this.model('User').create(user)
