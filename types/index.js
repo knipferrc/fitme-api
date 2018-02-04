@@ -6,6 +6,7 @@ const User = require('./User')
 const Workout = require('./Workout')
 const Exercise = require('./Exercise')
 const Appointment = require('./Appointment')
+const Directive = require('./Directive')
 
 const types = [
   User,
@@ -15,6 +16,7 @@ const types = [
   Query,
   Mutation,
   Subscription,
+  Directive,
   Schema
 ]
 
