@@ -5,6 +5,10 @@ module.exports = {
     message: 'An unknown error has occured'
   }),
 
+  AuthorizationError: createError('AuthorizationError', {
+    message: 'You are not authorized'
+  }),
+
   InvalidCredentialsError: createError('InvalidCredentialsError', {
     message: 'Invalid credentials'
   }),
