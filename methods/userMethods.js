@@ -108,6 +108,9 @@ const userMethods = UserSchema => {
     //TODO - USE PRODUCTION URL
     const passwordResetUrl = `http://localhost:1234/resetPassword?token=${passwordResetToken}`
 
+    // Keep console.log() until email is configured for testing
+    console.log('PASSWORD RESET URL: ', passwordResetUrl)
+
     // TODO - SEND EMAIL
 
     return true
@@ -129,18 +132,26 @@ const userMethods = UserSchema => {
     const saltRounds = 10
     const hash = await bcrypt.hash(password, saltRounds)
 
-    const updatedUser = await this.model('User').update(
-      { _id: user._id },
-      {
-        $set: {
-          password: hash,
-          passwordResetToken: null,
-          passwordResetExpiration: null
-        }
-      }
+    user.set({
+      password: hash,
+      passwordResetToken: null,
+      passwordResetExpiration: null
+    })
+
+    const updatedUser = await user.save()
+
+    const accessToken = jwt.sign(
+      { userId: updatedUser._id },
+      process.env.JWT_SECRET
     )
 
-    return jwt.sign({ userId: updatedUser._id }, process.env.JWT_SECRET)
+    return {
+      accessToken,
+      role: updatedUser.role,
+      email: updatedUser.email,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName
+    }
   }
 
   UserSchema.methods.getCurrentUser = async function(accessToken) {
