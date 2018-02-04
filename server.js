@@ -5,6 +5,7 @@ const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
 const { formatError } = require('apollo-errors')
+const { attachDirectives, directiveResolvers } = require('./directives')
 
 const Appointment = require('./models/Appointment')
 const Workout = require('./models/Workout')
@@ -25,16 +26,20 @@ mongoose.connect(process.env.DB_CONNECTION_STRING)
 
 app.disable('x-powered-by')
 app.use(middleware())
+
+attachDirectives(schema)
+
 app.use(
   '/graphql',
-  graphqlExpress(() => ({
+  graphqlExpress(req => ({
     schema,
     formatError,
     context: {
       User: new User(),
       Workout: new Workout(),
       Exercise: new Exercise(),
-      Appointment: new Appointment()
+      Appointment: new Appointment(),
+      headers: req.headers
     }
   }))
 )
