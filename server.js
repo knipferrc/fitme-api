@@ -5,7 +5,7 @@ const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { execute, subscribe } = require('graphql')
 const { createServer } = require('http')
 const { formatError } = require('apollo-errors')
-const { attachDirectives, directiveResolvers } = require('./directives')
+const attachDirectives = require('./utils/attachDirectives')
 
 const Appointment = require('./models/Appointment')
 const Workout = require('./models/Workout')
