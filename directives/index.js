@@ -1,0 +1,56 @@
+const { forEachField } = require('graphql-tools')
+const { getArgumentValues } = require('graphql/execution/values')
+const { AuthorizationError } = require('../utils/errors')
+const jwt = require('jsonwebtoken')
+
+const directiveResolvers = {
+  isAuthenticated(result, source, args, context) {
+    const token = context.headers.authorization
+    if (!token) {
+      throw new AuthorizationError({
+        message: 'You must supply a JWT for authorization'
+      })
+    }
+    try {
+      const decoded = jwt.verify(
+        token.replace('Bearer ', ''),
+        process.env.JWT_SECRET
+      )
+      return result
+    } catch (error) {
+      throw new AuthorizationError()
+    }
+  }
+}
+
+const attachDirectives = schema => {
+  forEachField(schema, field => {
+    const directives = field.astNode.directives
+    directives.forEach(directive => {
+      const directiveName = directive.name.value
+      const resolver = directiveResolvers[directiveName]
+
+      if (resolver) {
+        const oldResolve = field.resolve
+        const Directive = schema.getDirective(directiveName)
+        const args = getArgumentValues(Directive, directive)
+
+        field.resolve = function() {
+          const [source, _, context, info] = arguments
+          let promise = oldResolve.call(field, ...arguments)
+
+          const isPrimitive = !(promise instanceof Promise)
+          if (isPrimitive) {
+            promise = Promise.resolve(promise)
+          }
+
+          return promise.then(result =>
+            resolver(result, source, args, context, info)
+          )
+        }
+      }
+    })
+  })
+}
+
+module.exports = { directiveResolvers, attachDirectives }
