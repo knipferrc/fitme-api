@@ -5,7 +5,7 @@ const Query = `
     trainersTotalWorkouts(trainerId: ID!): Int
     trainersNextAppointment(trainerId: ID!): Appointment,
     trainersTotalClients(trainerId: ID!): Int
-    allTrainers: [User]
+    allTrainers: [User] @isAuthenticated
     trainersClients(trainerId: ID!): [User]
 	}
 `
