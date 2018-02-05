@@ -1,6 +1,5 @@
 const pubsub = require('../utils/pubsub')
 const SubscriptionType = require('../utils/constants/SubscriptionType')
-const { UnknownError } = require('../utils/errors')
 const baseResolver = require('../utils/baseResolver')
 
 const register = baseResolver.createResolver(
