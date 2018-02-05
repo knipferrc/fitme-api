@@ -5,6 +5,7 @@ const Mutation = `
     sendResetPasswordEmail(email: String!): Boolean
     resetPassword(password: String!, token: String!): User
     createClient(email: String!, password: String!, firstName: String!, lastName: String!, trainerId: ID!): User
+    removeUser(userId: String!): User
   }
 `
 
