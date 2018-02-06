@@ -1,5 +1,5 @@
 const Directive = `
-  directive @isAuthenticated on QUERY
+  directive @isAuthenticated on QUERY | MUTATION
 `
 
 module.exports = Directive
