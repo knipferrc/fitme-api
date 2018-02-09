@@ -6,6 +6,7 @@ const Mutation = `
     resetPassword(password: String!, token: String!): User
     createClient(email: String!, password: String!, firstName: String!, lastName: String!, trainerId: ID!): User
     removeTrainer(userId: String!): User @isAuthenticated
+    changePassword(password: String!): User @isAuthenticated
   }
 `
 

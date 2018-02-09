@@ -5,6 +5,7 @@ const removeTrainer = require('../mutations/removeTrainer')
 
 const sendResetPasswordEmail = require('../mutations/sendResetPasswordEmail')
 const resetPassword = require('../mutations/resetPassword')
+const changePassword = require('../mutations/changePassword')
 
 const Mutation = {
   login,
@@ -12,7 +13,8 @@ const Mutation = {
   sendResetPasswordEmail,
   resetPassword,
   createClient,
-  removeTrainer
+  removeTrainer,
+  changePassword
 }
 
 module.exports = Mutation
