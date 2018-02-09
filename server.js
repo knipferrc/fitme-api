@@ -39,7 +39,7 @@ app.use(
       Workout: new Workout(),
       Exercise: new Exercise(),
       Appointment: new Appointment(),
-      headers: req.headers
+      accessToken: req.headers.authorization.replace('Bearer ', '')
     }
   }))
 )
