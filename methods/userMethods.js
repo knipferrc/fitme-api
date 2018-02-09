@@ -13,7 +13,8 @@ const {
   NoUserAssociatedWithEmailError,
   PasswordResetLinkInvalidError,
   PasswordResetLinkExpiredError,
-  ChangePasswordError
+  ChangePasswordDifferentPassError,
+  ChangePasswordInvalidCurrentPassError
 } = require('../utils/errors')
 
 const userMethods = UserSchema => {
@@ -155,19 +156,32 @@ const userMethods = UserSchema => {
     }
   }
 
-  UserSchema.methods.changePassword = async function(accessToken, password) {
+  UserSchema.methods.changePassword = async function(
+    accessToken,
+    currentPassword,
+    newPassword
+  ) {
     const { userId } = await jwt.verify(accessToken, process.env.JWT_SECRET)
 
     const user = await this.model('User').findById({ _id: userId })
 
-    const oldPasswordMatches = await bcrypt.compare(password, user.password)
+    const currentPasswordMatches = await bcrypt.compare(
+      currentPassword,
+      user.password
+    )
+
+    if (!currentPasswordMatches) {
+      throw new ChangePasswordInvalidCurrentPassError()
+    }
+
+    const oldPasswordMatches = await bcrypt.compare(newPassword, user.password)
 
     if (oldPasswordMatches) {
-      throw new ChangePasswordError()
+      throw new ChangePasswordDifferentPassError()
     }
 
     const saltRounds = 10
-    const hash = await bcrypt.hash(password, saltRounds)
+    const hash = await bcrypt.hash(newPassword, saltRounds)
 
     user.set({ password: hash })
 
