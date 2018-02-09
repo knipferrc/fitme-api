@@ -36,7 +36,14 @@ module.exports = {
     message: 'Password reset link is invalid or expired'
   }),
 
-  ChangePasswordError: createError('ChangePasswordError', {
+  ChangePasswordDifferentPassError: createError('ChangePasswordError', {
     message: 'Your password must be different that your current password'
-  })
+  }),
+
+  ChangePasswordInvalidCurrentPassError: createError(
+    'ChangePasswordInvalidCurrentPassError',
+    {
+      message: 'The current password you entered is invalid'
+    }
+  )
 }
