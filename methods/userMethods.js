@@ -12,7 +12,8 @@ const {
   UserExistsError,
   NoUserAssociatedWithEmailError,
   PasswordResetLinkInvalidError,
-  PasswordResetLinkExpiredError
+  PasswordResetLinkExpiredError,
+  ChangePasswordError
 } = require('../utils/errors')
 
 const userMethods = UserSchema => {
@@ -147,6 +148,38 @@ const userMethods = UserSchema => {
 
     return {
       accessToken,
+      role: updatedUser.role,
+      email: updatedUser.email,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName
+    }
+  }
+
+  UserSchema.methods.changePassword = async function(accessToken, password) {
+    const { userId } = await jwt.verify(accessToken, process.env.JWT_SECRET)
+
+    const user = await this.model('User').findById({ _id: userId })
+
+    const oldPasswordMatches = await bcrypt.compare(password, user.password)
+
+    if (oldPasswordMatches) {
+      throw new ChangePasswordError()
+    }
+
+    const saltRounds = 10
+    const hash = await bcrypt.hash(password, saltRounds)
+
+    user.set({ password: hash })
+
+    const updatedUser = await user.save()
+
+    const newAccessToken = jwt.sign(
+      { userId: updatedUser._id },
+      process.env.JWT_SECRET
+    )
+
+    return {
+      accessToken: newAccessToken,
       role: updatedUser.role,
       email: updatedUser.email,
       firstName: updatedUser.firstName,
