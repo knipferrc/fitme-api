@@ -43,5 +43,9 @@ const UserSchema = new Schema({
 })
 
 require('../methods/userMethods')(UserSchema)
+require('../methods/userAuthMethods')(UserSchema)
+require('../methods/userClientMethods')(UserSchema)
+require('../methods/userPasswordMethods')(UserSchema)
+require('../methods/userTrainerMethods')(UserSchema)
 
 module.exports = mongoose.model('User', UserSchema)
