@@ -1,16 +1,16 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-const UserType = require('../utils/constants/UserType')
+const UserType = require('../../utils/constants/UserType')
 const { ADMIN, TRAINER, CLIENT } = UserType
 
 const {
   InvalidCredentialsError,
   UserNotFoundError,
   UserExistsError
-} = require('../utils/errors')
+} = require('../../utils/errors')
 
-const userAuthMethods = UserSchema => {
+const authMethods = UserSchema => {
   UserSchema.methods.login = async function(email, password) {
     const user = await this.model('User').findOne({ email })
     if (user) {
@@ -76,4 +76,4 @@ const userAuthMethods = UserSchema => {
   }
 }
 
-module.exports = userAuthMethods
+module.exports = authMethods

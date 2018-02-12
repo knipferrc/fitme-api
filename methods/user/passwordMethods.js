@@ -9,9 +9,9 @@ const {
   PasswordResetLinkExpiredError,
   ChangePasswordDifferentPassError,
   ChangePasswordInvalidCurrentPassError
-} = require('../utils/errors')
+} = require('../../utils/errors')
 
-const userPasswordMethods = UserSchema => {
+const passwordMethods = UserSchema => {
   UserSchema.methods.validPassword = function(password) {
     return bcrypt.compare(password, this.password)
   }
@@ -132,4 +132,4 @@ const userPasswordMethods = UserSchema => {
   }
 }
 
-module.exports = userPasswordMethods
+module.exports = passwordMethods

@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt')
 
-const UserType = require('../utils/constants/UserType')
+const UserType = require('../../utils/constants/UserType')
 const { CLIENT } = UserType
 
-const { UserExistsError } = require('../utils/errors')
+const { UserExistsError } = require('../../utils/errors')
 
-const userClientMethods = UserSchema => {
+const clientMethods = UserSchema => {
   UserSchema.methods.createClient = async function(
     email,
     password,
@@ -43,4 +43,4 @@ const userClientMethods = UserSchema => {
   }
 }
 
-module.exports = userClientMethods
+module.exports = clientMethods

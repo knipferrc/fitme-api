@@ -1,4 +1,4 @@
-const userTrainerMethods = UserSchema => {
+const trainerMethods = UserSchema => {
   UserSchema.methods.getTrainersTotalClients = function(trainerId) {
     return this.model('User')
       .find({ trainerId })
@@ -14,4 +14,4 @@ const userTrainerMethods = UserSchema => {
   }
 }
 
-module.exports = userTrainerMethods
+module.exports = trainerMethods

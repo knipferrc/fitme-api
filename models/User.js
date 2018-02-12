@@ -42,10 +42,10 @@ const UserSchema = new Schema({
   }
 })
 
-require('../methods/userMethods')(UserSchema)
-require('../methods/userAuthMethods')(UserSchema)
-require('../methods/userClientMethods')(UserSchema)
-require('../methods/userPasswordMethods')(UserSchema)
-require('../methods/userTrainerMethods')(UserSchema)
+require('../methods/user/authMethods')(UserSchema)
+require('../methods/user/clientMethods')(UserSchema)
+require('../methods/user/passwordMethods')(UserSchema)
+require('../methods/user/trainerMethods')(UserSchema)
+require('../methods/user/userMethods')(UserSchema)
 
 module.exports = mongoose.model('User', UserSchema)
