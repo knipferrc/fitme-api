@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const path = require('path')
+const fs = require('fs')
 
 const UserType = require('../utils/constants/UserType')
 const { ADMIN, TRAINER, CLIENT } = UserType
@@ -42,10 +44,8 @@ const UserSchema = new Schema({
   }
 })
 
-require('../methods/user/authMethods')(UserSchema)
-require('../methods/user/clientMethods')(UserSchema)
-require('../methods/user/passwordMethods')(UserSchema)
-require('../methods/user/trainerMethods')(UserSchema)
-require('../methods/user/userMethods')(UserSchema)
+fs.readdirSync('./methods/user/').forEach(file => {
+  require(`../methods/user/${file}`)(UserSchema)
+})
 
 module.exports = mongoose.model('User', UserSchema)
