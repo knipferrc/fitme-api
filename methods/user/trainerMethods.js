@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken')
 
+const UserTypes = require('../../utils/constants/UserType')
+const { TRAINER } = UserTypes
+
 const trainerMethods = UserSchema => {
   UserSchema.methods.getTrainersTotalClients = function(trainerId) {
     return this.model('User')
